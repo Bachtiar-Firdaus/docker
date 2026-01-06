@@ -1,0 +1,18 @@
+services:
+  mongodb-bind-mount:
+    container_name: mongodb-bind-mount
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    # ini sample volume sort
+    #volumes:
+    #  - "//d/db_management/mongo:/data/db"
+
+    #ini sample volume long
+    volumes:
+      - type: bind
+        source: "//d/db_management/mongo"
+        target: "/data/db"

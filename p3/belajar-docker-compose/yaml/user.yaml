@@ -1,0 +1,22 @@
+
+#string
+firstname: bachtiar
+lastname: firdaus
+
+#array
+hobibies:
+  - belajar
+  - makan
+
+#object
+address:
+  street: jl. sapta no 33
+  city: jakarta
+  country: indonesia
+
+#array; object
+wallet:
+  - type: cash
+    amount: 1000
+  - type: debit
+    amount: 50000

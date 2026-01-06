@@ -1,0 +1,44 @@
+services:
+  mongodb-data1:
+    container_name: mongodb-data1
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    # ini sample volume sort
+    volumes:
+     - "mongo-data1:/data/db"
+    networks:
+      - networks-cluster-mongo
+
+  mongodb-data2:
+    container_name: mongodb-data2
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    #ini sample volume long
+    volumes:
+      - type: volume
+        source: "mongo-data2"
+        target: "/data/db"
+        read_only: false
+    networks:
+      - networks-cluster-mongo
+
+
+volumes:  
+  mongo-data1:
+    name: mongo-data1
+  mongo-data2:
+    name: mongo-data2
+
+
+networks:
+  networks-cluster-mongo:
+    name: networks-cluster-mongo
+    driver: bridge

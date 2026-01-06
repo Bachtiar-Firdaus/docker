@@ -1,0 +1,9 @@
+services:
+  mongodb-ex:
+    container_name: mongodb-ex
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root1
+      MONGO_INITDB_ROOT_PASSWORD: root1

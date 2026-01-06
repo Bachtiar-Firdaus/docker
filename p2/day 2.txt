@@ -1,0 +1,14 @@
+untuk image bisa di cari di https://hub.docker.com/
+label hanya berfungsi untuk informasi only
+Add dari tar.gz bisa jadi folder ketika di gunakan
+
+perbedaan copy dan add hanya terletak pada url
+copy hanya file only
+add bisa melakukan proses copy beserta mendownload dari source url
+dan juga perbedaan add dan copy klo file compresed seperti tar.gz klo di add otomatis melakukan extrack sedangkan copy hanya filenya saja di copy tidak di extract
+
+expose hanya berfungsi untuk informasi only untuk port
+
+agar container bisa di pantau berjalan baik atau tidak menggunakan HEALTH CHECK
+
+# pentingnya menggunakan multistage build klo di golang untuk meringankan container

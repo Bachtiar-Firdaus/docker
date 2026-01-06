@@ -1,0 +1,37 @@
+services:
+  mongodb-data-depends-on:
+    container_name: mongodb-data-depends-on
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+     - "//d/db_management/mongo:/data/db"
+    networks:
+      - networks-cluster-mongo-depends
+
+  mongodb-express-depends-on:
+    container_name: mongodb-express-depends-on
+    image: mongo-express:latest    
+    # ini penambahan agar ketika eror auto restart
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+        ME_CONFIG_MONGODB_URL: "mongodb://root:root@mongodb-data-depends-on:27017/"
+        ME_CONFIG_BASICAUTH_USERNAME: root
+        ME_CONFIG_BASICAUTH_PASSWORD: root
+    networks:
+      - networks-cluster-mongo-depends
+    # untuk menjalan kan ini wajib mongodb-data-depends-on sudah berjalan
+    # caranya dengan depends on
+    depends_on:
+      -  mongodb-data-depends-on
+
+
+networks:
+  networks-cluster-mongo-depends:
+    name: networks-cluster-mongo-depends
+    driver: bridge

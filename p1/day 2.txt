@@ -1,0 +1,58 @@
+basic 8 restore volume
+docker volume create testingvolumerestore
+docker container run --rm --name fastrestorevolume --mount "type=bind,source=/d/db_management/testing_extrack_data_from_volume,destination=/backup" --volume testingvolumerestore:/data ubuntu:latest bash -c "cd /data && tar xvf /backup/bakup-fast.tar.gz --strip 1"
+
+docker container create --name testingmongowithvolumerestore --volume testingvolumerestore:/data/db --publish 27020:27017 --env MONGO_INITDB_ROOT_USERNAME=root --env MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
+
+
+basic 9 network driver
+docker network ls
+docker network create --driver bridge contohnetwork
+docker network rm contohnetwork
+
+
+basic 10 container network cluster jaringan
+docker network create --driver bridge mongonetwork
+
+docker container create --name mongodbnetw --network mongonetwork --env MONGO_INITDB_ROOT_USERNAME=root --env MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
+
+docker run -d --name mongoakses `
+  --network mongonetwork `
+  -p 8081:8081 `
+  -e ME_CONFIG_MONGODB_URL="mongodb://root:root@mongodbnetw:27017/" `
+  -e ME_CONFIG_BASICAUTH_USERNAME=root `
+  -e ME_CONFIG_BASICAUTH_PASSWORD=root `
+  mongo-express:latest
+
+
+docker container start mongodbnetw
+docker container start mongoakses
+
+untuk memutus atau menghubungkan koneksi network 
+docker network disconnect mongonetwork mongodbnetw
+docker network connect mongonetwork mongodbnetw
+
+
+basic 11 inpect untuk melihat detailing  
+docker image inspect mongo-express:latest
+docker network inspect mongonetwork
+
+
+basic 12 prune untuk auto cleansing
+docker image prune
+docker volume prune
+docker container prune
+docker system prune
+
+
+
+
+
+
+
+
+
+
+
+
+

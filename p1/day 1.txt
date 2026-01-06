@@ -1,0 +1,82 @@
+basic 1 pengenalan
+$ docker image pull redis:latest
+$ docker image ls
+$ docker image rm redis:latest
+$ docker container create --name contohredis redis:latest
+$ docker container ls -a
+$ docker container start contohredis
+$ docker container stop contohredis
+$ docker container rm contohredis
+$ docker container logs contohredis
+$ docker container logs -f contohredis
+
+
+basic 2 testing masuk ke dalam container menggunakan exec
+$ docker exec -it contohredis sh
+# ls
+# cd ..
+# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+# redis-cli
+exit
+exit
+
+
+basic 3 testing publish container agar container yang terisolasi bisa diakses dari luar container
+$ docker container create --name testingpublishnginx --publish 8080:80 nginx:latest
+$ docker container start testingpublishnginx
+http://localhost:8080/
+
+
+basic 4 environtment variable
+$ docker container create --name contohmongowithenv --publish 27017:27017 --env MONGO_INITDB_ROOT_USERNAME=root --env MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
+
+
+basic 5 monitoring
+$ docker container stats
+CONTAINER ID   NAME                  CPU %     MEM USAGE / LIMIT     MEM %     NET I/O         BLOCK I/O     PIDS
+d9fadc792900   contohmongowithenv    0.86%     198.9MiB / 15.34GiB   1.27%     1.42kB / 126B   0B / 414kB    50
+b8c9fbbdb4f5   testingpublishnginx   0.00%     21.48MiB / 15.34GiB   0.14%     998B / 126B     12.4MB / 0B   25
+8c2c647eee38   contohredis           0.13%     7.297MiB / 15.34GiB   0.05%     872B / 126B     6MB / 0B      6
+
+
+basic 5 container resource management
+$ docker container create --name testingpembatasanmemorydancpu --publish 8081:80 --memory 100m --cpus 0.5 nginx:latest
+$ docker container stats
+CONTAINER ID   NAME                            CPU %     MEM USAGE / LIMIT   MEM %     NET I/O         BLOCK I/O        PIDS
+b15dc577da05   testingpembatasanmemorydancpu   0.00%     19.14MiB / 100MiB   19.14%    1.17kB / 126B   721kB / 12.3kB   25
+
+===================================================================================================================
+
+basic 6 mounting agar data database tidak hilang Ketika containernya di hapus
+$ docker container create --name testingmongowithmounting --mount "type=bind,source=/d/db_management/mongo,destination=/data/db" --publish 27018:27017 --env MONGO_INITDB_ROOT_USERNAME=root --env MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
+
+penting banget untuk no. 6 perlu cari tahu lokasi db MySQL redis dll untuk data di simpan dimana agar Ketika container di drop data tidak terpengaruh
+
+===================================================================================================================
+
+basic 7 lanjutan dari management data
+$ docker volume create testingmongovolume
+$ docker volume ls
+$ docker volume rm testingmongovolume
+$ docker container create --name testingmongowithvolume --volume testingmongovolume:/data/db --publish 27019:27017 --env MONGO_INITDB_ROOT_USERNAME=root --env MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
+
+
+basic 8 backup data dari dalam volume
+$ docker container create --name extrackdatafromvolume --mount "type=bind,source=/d/db_management/testing_extrack_data_from_volume,destination=/backup" --volume testingmongovolume:/data nginx:latest
+$ docker container exec -it extrackdatafromvolume sh
+# ls -l
+# cd data
+# ls -l
+# tar cvf /backup/bakup.tar.gz /data
+
+cara lebih simplenya
+docker run --rm --name fastbackupvolume --mount "type=bind,source=/d/db_management/testing_extrack_data_from_volume,destination=/backup" --volume testingmongovolume:/data ubuntu:latest tar cvf /backup/bakup-fast.tar.gz /data
+
+
+
+
+
+
+
+
